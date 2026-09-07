@@ -1,36 +1,37 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Motion Lab: SVG Quest
 
-## Getting Started
+This Next.js project is now a small interactive game-like page for learning how GSAP fits into a real web experience.
 
-First, run the development server:
+Run it with:
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
+```sh
+pnpm install
 pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Then open http://localhost:3000.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+The page has a three-step local quest:
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+1. Wake a custom inline SVG lantern with a GSAP timeline.
+2. Choose a route. React stores the choice and GSAP draws the path.
+3. Collect three SVG shards. GSAP provides the click feedback while React updates the count.
 
-## Learn More
+Progress is stored under `motion-lab-quest` in the browser's localStorage. The Reset campaign button clears that save. The “Show code” panel displays the small animation recipe for the current objective.
 
-To learn more about Next.js, take a look at the following resources:
+The architecture is deliberate:
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+```text
+user input → GSAP visual feedback → React game state → localStorage save
+```
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+GSAP is the motion layer. It changes SVG transforms, opacity, scale, and stroke drawing over time. React is the state layer. It decides which quests are complete, which path is selected, and how much XP to display. For a production game, keep those responsibilities separate and clean up GSAP contexts when a scene is removed.
 
-## Deploy on Vercel
+GSAP's official repository currently states that the complete toolset is free for commercial use, including the formerly paid plugins. Read the [standard license](https://gsap.com/standard-license) for the exact terms that apply to your distribution model. This project uses the public `gsap` npm package.
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## Where to look
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+- `app/page.tsx` contains the quest state, local save, inline SVG, and GSAP timelines.
+- `app/globals.css` contains the responsive game UI.
+
+`pnpm lint` and `node node_modules/typescript/bin/tsc --noEmit` should pass. Test animation performance on the devices that matter to your real project; this page is a learning prototype, not a production benchmark.
